@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'CaskaydiaCove NF SemiLight';
+    src: url('CaskaydiaCoveNF-SemiLight.woff2') format('woff2'),
+        url('CaskaydiaCoveNF-SemiLight.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+

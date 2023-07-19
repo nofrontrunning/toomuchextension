@@ -1,0 +1,15 @@
+{
+    "name": "Too Much, WTF!",
+    "description": "Get alert when you are paying too much ",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+      "default_popup": "home.html",
+      "default_icon": "logo.png"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": ["scripting", "tabs",  "http://*/*", "https://*/*"],
+    "host_permissions": ["<all_urls>"]
+  }
