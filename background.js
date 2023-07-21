@@ -9,6 +9,7 @@
 //    "paraswap",
 //    "cowswap",
 //    "li.fi",
+//    "swap.defillama.com"
 // ];
 
 // [^\/]+
@@ -25,6 +26,7 @@ let monitoredURLs = [
    new RegExp('https:\/\/jumper\.exchange\/'),
    new RegExp('https:\/\/stake\.rocketpool\.net\/'),
    new RegExp('https:\/\/stake\.lido\.fi\/'),
+   new RegExp('https:\/\/swap\.defillama\.com\/'),
 ];
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {

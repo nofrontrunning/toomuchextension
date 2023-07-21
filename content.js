@@ -6,6 +6,7 @@ var tokenData2  = {};
 if (document.URL.includes("https://app.uniswap.org/#/swap")) {
     
     console.log("uni loaded");
+    
     // This code will be executed after 2 seconds
     var uniSwapBtn = document.getElementById('swap-button');
 
@@ -13,31 +14,36 @@ if (document.URL.includes("https://app.uniswap.org/#/swap")) {
         setTimeout(function() {
             uniSwapBtn.addEventListener("click", async () => await updateUniswapQuote()); 
         }, waitTime);
-    };
-    
-    // if swap-button is not on page yet we listen to the time when it is added
-    var targetNode = document.getElementsByClassName('sc-1kykgp9-2 hinWpT')[0];
+    } else {
 
-    var observer = new MutationObserver(function(mutationsList, observer) {
-        for(var mutation of mutationsList) {
-            if (mutation.type === 'childList') {
-                console.log("added child");
-                for (var i = 0; i < mutation.addedNodes.length; i++) {
-                    var node = mutation.addedNodes[i];
-                    if (node.id === 'swap-button') {
-                        console.log("added btn");
-                        setTimeout(function() {
-                            document.getElementById('swap-button').addEventListener("click", async () => await updateUniswapQuote()); 
-                        }, waitTime);
-                        
-                        // observer.disconnect();
+        // if swap-button is not on page yet we listen to the time when it is added
+        var targetNode = document.getElementsByClassName('sc-1kykgp9-2 hinWpT')[0];
+
+        var observer = new MutationObserver(function(mutationsList, observer) {
+            for(var mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    console.log("added child");
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        var node = mutation.addedNodes[i];
+                        if (node.id === 'swap-button') {
+                            console.log("added btn");
+                            setTimeout(function() {
+                                document.getElementById('swap-button').addEventListener("click", async () => await updateUniswapQuote()); 
+                            }, waitTime);
+                            
+                            // observer.disconnect();
+                        }
                     }
                 }
             }
-        }
-    });
+        });
 
-    observer.observe(targetNode, { childList: true, subtree: true });
+        observer.observe(targetNode, { childList: true, subtree: true });
+
+        console.log("uni observer added");
+
+    }
+
     
 } else if (document.URL.includes("https://app.1inch.io/")) {
 
@@ -243,6 +249,35 @@ setTimeout(function() {
     
         } else {    
             document.getElementsByClassName('sc-bjUoiL gLzAs')[0].addEventListener('mousedown', async () => await updateLidoQuote());
+        }
+    }, waitTime);
+} else if (document.URL.includes("defillama")) {
+    console.log("defillama loaded");
+
+    setTimeout(function() {
+
+
+        let bestQuote = document.getElementsByClassName('sc-51fa3f9c-1 gXuGfb')[0];
+
+        if (bestQuote != undefined){
+
+            var targetNode = document.getElementsByClassName('sc-bb167634-2 cObIGF')[0];
+            var observer = new MutationObserver( async function(mutationsList, observer) {
+           
+                for(var mutation of mutationsList){
+                    console.log(mutation);
+    
+                    if(mutation.type === "childList"){
+                        console.log("loggedin");
+                        document.getElementsByClassName('sc-d413ea6e-0 kxiweL RouteWrapper is-selected')[0].addEventListener('mousedown', async () => await updateLlamaQuote());
+                    }
+                }
+            });
+    
+            observer.observe(targetNode, { attributes: true, attributeFilter: ['class'], childList: true, subtree: true });
+    
+        } else {    
+            document.getElementsByClassName('sc-bb167634-2 cObIGF')[0].addEventListener('click', async () => await updateLlamaQuote());
         }
     }, waitTime);
 }
@@ -543,6 +578,32 @@ async function updateLidoQuote(){
     await formatAndCompareQuote(quote);
 }
 
+async function updateLlamaQuote(quote) {
+
+    console.log("quoting");
+
+    setTimeout( async function() {
+        var quote = [
+            sanitizeNum(document.getElementsByClassName('chakra-input css-lv0ed5')[0].value), //input amt
+            document.getElementsByClassName('chakra-text css-sys4p8')[0].innerText, //input symbol
+            sanitizeNum(document.getElementsByClassName('chakra-input css-lv0ed5')[1].value), //output amt
+            document.getElementsByClassName('chakra-text css-sys4p8')[1].innerText,// output symbol
+            "defillama",  //protocol
+            document.getElementsByClassName(' css-3elh5k-singleValue')[0].children[0].children[1].innerText//chainName
+        ];
+    
+        console.log(quote);
+    
+        let chainId = JSON.parse(getChainIdFromName(quote[5]));
+        if (chainId != 1) {
+            console.log("toomuch - chain not supported");
+            return;
+        }
+    
+        await formatAndCompareQuote(quote);
+    }, waitTime);
+    
+}
 
 
 
@@ -552,9 +613,10 @@ async function updateLidoQuote(){
 
 
 
+//// Helpers
 
 function getChainIdFromName(name){
-    return 1; //TODO - delete before deploy
+    // return 1; //TODO - delete before deploy
 
     name = name.toLowerCase();
     switch(name){
