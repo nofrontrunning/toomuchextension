@@ -280,7 +280,34 @@ setTimeout(function() {
             document.getElementsByClassName('sc-bb167634-2 cObIGF')[0].addEventListener('click', async () => await updateLlamaQuote());
         }
     }, waitTime);
+} else if (document.URL.includes("dodoex")) {
+    console.log("dodo loaded");
+
+    setTimeout(function() {
+
+        var targetNode = document.getElementsByClassName('MuiBox-root mui-style-nzjmwu')[0];
+        var observer = new MutationObserver( async function(mutationsList, observer) {
+        
+            for(var mutation of mutationsList){
+        
+                if(mutation.type === "childList"){
+                    document.getElementsByClassName('MuiButtonBase-root contained mui-style-1ayh7r2')[0].addEventListener('click', async () => await updateDodoQuote());
+                }
+            }
+        });
+
+        observer.observe(targetNode, { attributes: true, attributeFilter: ['class'], childList: true, subtree: true });
+
+    }, waitTime);
+} else if (document.URL.includes("mav.xyz")) {
+    console.log("mav loaded");
+
+    setTimeout(function() {
+        var button = document.getElementsByClassName('MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButtonBase-root')[0];
+        button.addEventListener('click', async () => await updateMavQuote());
+    }, waitTime);
 }
+
 
 
 
@@ -578,7 +605,7 @@ async function updateLidoQuote(){
     await formatAndCompareQuote(quote);
 }
 
-async function updateLlamaQuote(quote) {
+async function updateLlamaQuote() {
 
     console.log("quoting");
 
@@ -606,6 +633,69 @@ async function updateLlamaQuote(quote) {
 }
 
 
+async function updateDodoQuote() {
+
+    console.log("quoting");
+
+    setTimeout( async function() {
+        var quote = [
+            sanitizeNum(document.getElementsByClassName('MuiInputBase-input MuiInput-input mui-style-sg2ko9')[0].value), //input amt
+            document.getElementsByClassName('MuiButtonBase-root MuiBox-root mui-style-1xb7tfc')[0].children[1].children[0].innerText, //input symbol
+            sanitizeNum(document.getElementsByClassName('MuiInputBase-input MuiInput-input Mui-readOnly MuiInputBase-readOnly mui-style-sg2ko9')[0].value), //output amt
+            document.getElementsByClassName('MuiButtonBase-root MuiBox-root mui-style-1xb7tfc')[1].children[1].children[0].innerText,// output symbol
+            "dodo",  //protocol
+            document.getElementsByClassName('showName MuiBox-root mui-style-1isemmb')[1].innerText//chainName
+        ];
+    
+        console.log(quote);
+    
+        let chainId = JSON.parse(getChainIdFromName(quote[5]));
+        if (chainId != 1) {
+            console.log("toomuch - chain not supported");
+            return;
+        }
+    
+        await formatAndCompareQuote(quote);
+    }, waitTime);
+    
+}
+
+
+async function updateMavQuote() {
+
+    console.log("quoting mav");
+
+    setTimeout( async function() {
+
+        var trynode = document.getElementsByClassName('MuiTypography-root MuiTypography-h4 css-1pfa1h9')[0];
+
+        if (trynode != undefined){
+
+            var quote = [
+                sanitizeNum(document.getElementsByClassName('MuiTypography-root MuiTypography-h4 css-1pfa1h9')[0].innerText), //input amt
+                document.getElementsByClassName('MuiTypography-root MuiTypography-h4 css-1p63m5p')[0].innerText, //input symbol
+                sanitizeNum(document.getElementsByClassName('MuiTypography-root MuiTypography-h4 css-1pfa1h9')[1].innerText),//output amt
+                document.getElementsByClassName('MuiTypography-root MuiTypography-h4 css-1p63m5p')[1].innerText, // output symbol
+                "mav",  //protocol
+                document.getElementsByClassName('MuiTypography-root MuiTypography-h6 css-15u73lz')[0].innerText //chainName
+            ];
+        
+            console.log(quote);
+        
+            let chainId = JSON.parse(getChainIdFromName(quote[5]));
+    
+            if (chainId != 1) {
+                console.log("toomuch - chain not supported");
+                return;
+            }
+        
+            await formatAndCompareQuote(quote);
+
+        }
+    }, waitTime);
+    
+}
+
 
 
 
@@ -619,8 +709,14 @@ function getChainIdFromName(name){
     // return 1; //TODO - delete before deploy
 
     name = name.toLowerCase();
+    name = name.replace(" ", "");
+    console.log(name);
     switch(name){
-        case "ethereum" || "eth":
+        case "ethereum":
+            return 1;
+        case "eth":
+            return 1;
+        case "ethereummainnet":
             return 1;
         case "polygon":
             return 137;

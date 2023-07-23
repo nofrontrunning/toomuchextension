@@ -1,5 +1,5 @@
 
-<img width="1111" alt="Screenshot 2023-07-02 at 11 04 19" src="https://github.com/fasteater/toomuch/assets/49999458/bf5f9877-5934-411d-a944-52e93f3259a9">
+<img width="1111" alt="Screenshot 2023-07-02 at 11 04 19" src="https://raw.githubusercontent.com/nofrontrunning/toomuchweb/main/assets/screen.png">
 
 # TooMuch
 
@@ -29,9 +29,9 @@ Current Dapps supported:
 - lifi
 - rocket pool
 - lido
-
-In the pipeline:
 - defillama
+- dodo
+- Maverick
 
 
 # Process 

@@ -27,6 +27,8 @@ let monitoredURLs = [
    new RegExp('https:\/\/stake\.rocketpool\.net\/'),
    new RegExp('https:\/\/stake\.lido\.fi\/'),
    new RegExp('https:\/\/swap\.defillama\.com\/'),
+   new RegExp('https:\/\/app\.dodoex\.io\/'),
+   new RegExp('https:\/\/app\.mav\.xyz\/'),
 ];
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
