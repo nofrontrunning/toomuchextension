@@ -15,7 +15,7 @@
 // [^\/]+
 let monitoredURLs = [
    new RegExp('https:\/\/app\.uniswap\.org\/#\/swap'),
-   new RegExp('https:\/\/app\.1inch\.io\/#\/1\/simple\/swap\/[^\/]+\/[^\/]+'),
+   new RegExp('https:\/\/app\.1inch\.io\/#\/1\/simple\/swap\/'),
    new RegExp('https:\/\/www\.sushi\.com\/swap'),
    new RegExp('https:\/\/curve.fi\/\#\/[^\/]+\/swap'),
    new RegExp('https:\/\/pancakeswap\.finance\/swap'),

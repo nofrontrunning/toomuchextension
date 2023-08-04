@@ -45,38 +45,17 @@ if (document.URL.includes("https://app.uniswap.org/#/swap")) {
     }
 
     
-} else if (document.URL.includes("https://app.1inch.io/")) {
+} else if (document.URL.includes("1inch")) {
 
     console.log("1 inch page loaded");
-    // This code will be executed after 2 seconds
-    // var swapButton = document.getElementsByClassName('inch-button__button inch-button__button--color-gradient-blue inch-button__button--size-standard inch-button__button--width-full ng-star-inserted')[0];
-    // var swapButton = document.getElementById("swap-box.swap-button");
 
-    // if (swapButton != null) {
-    //     console.log("got button");
-    //     setTimeout(function() {
-    //         swapButton.addEventListener("click", async () => await update1inchQuote()); 
-    //     }, waitTime);
-    // };
-    
-    // if swap-button is not on page yet we listen to the time when it is added
-    var targetNode = document.getElementById('uni');
+    var swapButton = document.getElementsByClassName('swap-confirmation-button ng-star-inserted')[0];
 
-    var observer = new MutationObserver( async function(mutationsList, observer) {
-        for(var mutation of mutationsList) {
-            if (mutation.type === 'childList') {
-                 
-                for (var i = 0; i < mutation.addedNodes.length; i++) {
-                    var node = mutation.addedNodes[i];
-                    if (node.id === 'confirm-swap.do-swap-button' || node.id === 'confirm-swap.do-swap-anyway-button') {
-                        await update1inchQuote(); 
-                    }
-                }
-            }
-        }
-    });
+    if (swapButton != undefined) {
+        console.log("got btn")
+        swapButton.addEventListener("click", async () => await update1inchQuote()); 
+    };
 
-    observer.observe(targetNode, { childList: true, subtree: true });
     
 } else if (document.URL.includes("www.sushi.com/swap")) {
 
@@ -341,16 +320,11 @@ async function updateUniswapQuote(){
 
 }
 
-var quotingInProgress = false;
+
 
 async function update1inchQuote(){
-
-    if (quotingInProgress){
-        return;
-    }
     
     console.log("quoting");
-    quotingInProgress = true;
 
     var quote = [
         sanitizeNum(document.querySelectorAll('[data-id = "token-amount"]')[0].innerText), //input amt
@@ -371,7 +345,6 @@ async function update1inchQuote(){
 
     await formatAndCompareQuote(quote);
     
-    quotingInProgress = false;
 }
 
 async function updateSushiQuote(){
