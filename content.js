@@ -731,6 +731,7 @@ async function getTokenFromSymbol(symbol) {
             "symbol" : symbol  
         }
     } else {
+        console.log("TooMuch - can't get token from symbole via 1inch api");
         return null;
     }
 }

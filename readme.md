@@ -1,5 +1,5 @@
 
-<img width="1111" alt="Screenshot 2023-07-02 at 11 04 19" src="https://raw.githubusercontent.com/nofrontrunning/toomuchweb/main/assets/screen.png">
+<img src="./toomuch_demo.gif" />
 
 # TooMuch
 
