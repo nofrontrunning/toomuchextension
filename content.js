@@ -3,7 +3,7 @@ var tokenData2  = {};
 
 
 // checkURL(document.URL);
-if (document.URL.includes("https://app.uniswap.org/#/swap")) {
+if (document.URL.includes("uniswap")) {
     
     console.log("uni loaded");
     
@@ -11,13 +11,14 @@ if (document.URL.includes("https://app.uniswap.org/#/swap")) {
     var uniSwapBtn = document.getElementById('swap-button');
 
     if (uniSwapBtn != undefined) {
+        console.log("1");
         setTimeout(function() {
             uniSwapBtn.addEventListener("click", async () => await updateUniswapQuote()); 
         }, waitTime);
     } else {
-
+        console.log("2");
         // if swap-button is not on page yet we listen to the time when it is added
-        var targetNode = document.getElementsByClassName('sc-1kykgp9-2 hinWpT')[0];
+        var targetNode = document.getElementById('swap-page');
 
         var observer = new MutationObserver(function(mutationsList, observer) {
             for(var mutation of mutationsList) {
@@ -303,7 +304,7 @@ async function updateUniswapQuote(){
         sanitizeNum(document.querySelectorAll("#swap-currency-output .token-amount-input")[0].value), //output amt
         document.querySelectorAll("#swap-currency-output .token-symbol-container")[0].innerHTML, // output symbol
         "uniswap",  //protocol
-        document.querySelectorAll(".rgw6ez12d.rgw6ez19d")[0].alt //chainName
+        document.querySelector("img[data-testid = 'chain-selector-logo']").alt //chainName
     ];
 
     console.log(document.querySelectorAll("#swap-currency-output .token-amount-input")[0].value, quote[2]);
@@ -711,58 +712,83 @@ function sanitizeNum(num){
     return parseFloat(num.replace(/[,\s]/g, ""));
 }
 
-async function getTokenFromSymbol(symbol) {
-    if(Object.keys(tokenData2).length === 0) {
-       tokenData2 = await fetch('https://api.1inch.io/v5.0/1/tokens', {method: 'GET', headers: {accept: 'application/json'}});
-       tokenData2 = await tokenData2.json();
-       tokenData2 = tokenData2.tokens;
-    }
+// async function getTokenFromSymbol(symbol) {
+//     if(Object.keys(tokenData2).length === 0) {
+//        var response;
+//        chrome.runtime.sendMessage({msg: "getTokensFrom1inch", symbol: symbol}, async function(response) {
+//             if (response) {
+//                 console.log("got token");
+//                 console.log(response.tokens);
+//                 tokenData2 = response.tokens;
+//                 console.log(tokenData2);
 
-    let tokenData2Arr = Object.entries(tokenData2);
+//                 // let tokenData2Arr = Object.entries(tokenData2);
 
-    let tokenInfoArry = tokenData2Arr.filter(([key, val]) => { //returns a tokenInfoArry [add, {tokenDetails}]
-        return val.symbol === symbol;
-    });
+//                 // let tokenInfoArry = tokenData2Arr.filter(([key, val]) => { //returns a tokenInfoArry [add, {tokenDetails}]
+//                 //     return val.symbol === symbol;
+//                 // });
 
-    if(tokenInfoArry[0] != undefined && tokenInfoArry[0].length != 0) {
-        return {
-            "address" : tokenInfoArry[0][1].address,
-            "decimal" : tokenInfoArry[0][1].decimals,
-            "symbol" : symbol  
-        }
-    } else {
-        console.log("TooMuch - can't get token from symbole via 1inch api");
-        return null;
-    }
-}
+//                 let token = tokenData2.find((tk) => tk.symbol == symbol);
+
+//                 console.log(token);
+
+//                 if(token != undefined){
+//                     return {
+//                         "address" : token.address,
+//                         "decimal" : token.decimals,
+//                         "symbol" : symbol  
+//                     }
+//                 } else {
+//                     console.log("TooMuch - can't get token from symbole via 1inch api");
+//                     return null;
+//                 }
+//             } else {
+//                 console.error("No response or an error occurred.");
+//                 if (chrome.runtime.lastError) {
+//                     console.error(chrome.runtime.lastError.message);
+//                 };
+//                 return null;
+//             }
+//         });
+//     }
+// }
+
+// async function formatAndCompareQuote(quote) {
+
+//     console.log("quoting");
+//     console.log(quote);
+
+//     if(quote[0]>0 && quote[2]>0 && quote[1].length>0 && quote[3].length < 7){
+//         console.log("ready");
+//         console.log(quote);
+
+//         //format quote
+//         let fromToken = await getTokenFromSymbol(quote[1]);
+//         let toToken = await  getTokenFromSymbol(quote[3]);
+        
+//         console.log(fromToken);
+//         console.log(toToken);
+//         if (fromToken == null || toToken == null) {
+//             console.log("toomuch - token not supported");
+//             return;
+//         }
+
+//         let formattedQuote =  {
+//             fromToken: fromToken,
+//             toToken: toToken,
+//             fromAmt: quote[0] * 10**fromToken.decimal,
+//             toAmt: quote[2] * 10**toToken.decimal,
+//             fromChainName: quote[5],
+//             toChainName: quote[5],
+//             protocol: quote[4]
+//         };
+     
+//         await chrome.runtime.sendMessage({formattedQuote: formattedQuote, msg: "bgCompareQuote"});
+//         console.log(formattedQuote);
+//     } 
+// }
+
 
 async function formatAndCompareQuote(quote) {
-
-    if(quote[0]>0 && quote[2]>0 && quote[1].length>0 && quote[3].length < 7){
-        console.log("ready");
-        console.log(quote);
-
-        //format quote
-        let fromToken = await getTokenFromSymbol(quote[1]);
-        let toToken = await  getTokenFromSymbol(quote[3]);
-        
-
-        if (fromToken == null || toToken == null) {
-            console.log("toomuch - token not supported");
-            return;
-        }
-
-        let formattedQuote =  {
-            fromToken: fromToken,
-            toToken: toToken,
-            fromAmt: quote[0] * 10**fromToken.decimal,
-            toAmt: quote[2] * 10**toToken.decimal,
-            fromChainName: quote[5],
-            toChainName: quote[5],
-            protocol: quote[4]
-        };
-     
-        await chrome.runtime.sendMessage({formattedQuote: formattedQuote, msg: "bgCompareQuote"});
-  
-    } 
+    await chrome.runtime.sendMessage({quote: quote, msg: "formatAndCompareQuote"});
 }

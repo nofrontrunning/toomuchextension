@@ -3,6 +3,7 @@ async function getReady(){
 }
 
 getReady();
+console.log("popup is now ready");
 
 chrome.runtime.onMessage.addListener( async(request, sender, sendResponse) => {   
     console.log("got msgs");
@@ -11,7 +12,6 @@ chrome.runtime.onMessage.addListener( async(request, sender, sendResponse) => {
 
     //compare quote
     let finalQuote = [];
-    let targetTokenImg;
     let tokenFrom = existingQuote.fromToken.address;
     let tokenFromSymbol = existingQuote.fromToken.symbol;
     let tokenFromDecimal = existingQuote.fromToken.decimal;
@@ -22,6 +22,7 @@ chrome.runtime.onMessage.addListener( async(request, sender, sendResponse) => {
     let chainFrom = existingQuote.fromChainName;
     let chainTo = existingQuote.toChainName;
     let result;
+    let targetTokenImg = existingQuote.toToken.img
 
     let weth = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 
@@ -36,8 +37,7 @@ chrome.runtime.onMessage.addListener( async(request, sender, sendResponse) => {
         );
         result = await result.json();
     
-        // console.log(result);
-        targetTokenImg = result.toToken.logoURI;
+        console.log(result);
 
         finalQuote.push({
             amt: parseFloat(result.toTokenAmount),
@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener( async(request, sender, sendResponse) => {
         });
         
     } catch (e) {
-        console.log(e);
+        console.log(e); 
     }
  
 
