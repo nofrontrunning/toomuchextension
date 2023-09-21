@@ -131,6 +131,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                protocol: quote[4]
             };
 
+            console.log(JSON.stringify(formattedQuote));
+
             if(Date.now() - lastPopupTime > 3000) {
                console.log("popup");
                chrome.windows.create({url: "popup.html", type: "popup", width:370, height:655});
